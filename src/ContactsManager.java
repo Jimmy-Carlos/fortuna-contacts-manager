@@ -1,18 +1,18 @@
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class ContactsManager {
     public static void main(String[] args) {
         ContactsFile cf = new ContactsFile("data", "contacts.txt");
-        HashMap<String, String> contacts = new HashMap<>();
+//        HashMap<String, String> contacts = new HashMap<>();
         Scanner input = new Scanner(System.in);
+        List<Person> contacts = new ArrayList<>();
+
 
         try {
             cf.createDirectory();
             cf.createFile();
-        } catch(IOException io) {
+        } catch (IOException io) {
             io.printStackTrace();
         }
 
@@ -28,17 +28,17 @@ public class ContactsManager {
 
             int option = input.nextInt();
 
-            switch(option) {
+            switch (option) {
                 case 1:
                     try {
                         System.out.println("Name       | Phone");
                         System.out.println("-----------|-----------");
-                        for(String contact : cf.readFile()) {
+                        for (String contact : cf.readFile()) {
                             String[] c = contact.split(",");
 
                             System.out.printf("%-10s | %s%n", c[0], c[1]);
                         }
-                    } catch(IOException io) {
+                    } catch (IOException io) {
                         io.printStackTrace();
                     }
 
@@ -50,18 +50,33 @@ public class ContactsManager {
                     System.out.print("Enter the phone number: ");
                     String phone = input.next();
 
-                    contacts.put(name, phone);
+                    contacts.add(new Person(name, phone));
 
                     System.out.println(contacts);
                     try {
-                        cf.writeToFile(name, phone);
-                    } catch(IOException io) {
+                        cf.writeToFile(contacts);
+                    } catch (IOException io) {
                         io.printStackTrace();
                     }
                     break;
                 case 3:
                     break;
                 case 4:
+                    for (int i = 0; i < contacts.size(); i++) {
+                        System.out.println((i + 1) + ". " + contacts.get(i).getName() + " " + contacts.get(i).getNumber());
+                    }
+                    System.out.println("Enter the number of the contact you would like to delete?");
+                    int userContact = input.nextInt();
+                    contacts.remove(contacts.get(userContact - 1));
+
+                    try {
+                        cf.clearDoc();
+                        cf.writeToFile(contacts);
+                    } catch(IOException io) {
+                        io.printStackTrace();
+                    }
+
+
                     break;
                 case 5:
                     break;
@@ -73,6 +88,6 @@ public class ContactsManager {
 
             System.out.print("Would you like to enter another option? [Y/N] ");
             again = input.next();
-        } while(again.equalsIgnoreCase("y"));
+        } while (again.equalsIgnoreCase("y"));
     }
 }

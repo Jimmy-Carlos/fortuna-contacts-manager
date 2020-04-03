@@ -16,7 +16,7 @@ public class ContactsFile {
     }
 
     public static void createDirectory() throws IOException {
-        if(Files.notExists(Paths.get(directory))) {
+        if (Files.notExists(Paths.get(directory))) {
             Files.createDirectories(Paths.get(directory));
         }
     }
@@ -31,10 +31,24 @@ public class ContactsFile {
         return Files.readAllLines(Paths.get(directory, file));
     }
 
-    public static void writeToFile(String name, String phone) throws IOException {
-        Files.write(Paths.get(directory, file),
-                Arrays.asList(name + "," + phone),
-                StandardOpenOption.APPEND
+    public static void writeToFile(List<Person> contacts) throws IOException {
+        for(Person contact: contacts){
+        Files.write(Paths.get(directory, file), contact.createLineText(), StandardOpenOption.APPEND
         );
+        }
     }
+
+    public static void clearDoc() throws IOException {
+        Files.newOutputStream(Paths.get(directory, file), StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+//    public static void writeToFile(List<Person> contacts) throws IOException {
+//        for(Person contact: contacts){
+//            Files.write(Paths.get(directory, file), contact.createLineText(), StandardOpenOption.APPEND
+//            );
+//        }
+//
+//    }
+
+
 }
