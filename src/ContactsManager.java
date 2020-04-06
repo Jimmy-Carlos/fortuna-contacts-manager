@@ -77,10 +77,15 @@ public class ContactsManager {
 
 
                     String name = fName + " " + lName;
-                    String number = phone.replaceFirst("(\\d{3})(\\d{3})(\\d+)", "($1) $2-$3");
+
+                    if(phone.length() == 7) {
+                        phone = phone.replaceFirst("(\\d{3})(\\d+)", "$1-$2");
+                    } else {
+                        phone = phone.replaceFirst("(\\d{3})(\\d{3})(\\d+)", "($1) $2-$3");
+                    }
 
 
-                    contacts.add(new Person(name, number));
+                    contacts.add(new Person(name, phone));
 
                     try {
                         cf.clearDoc();
