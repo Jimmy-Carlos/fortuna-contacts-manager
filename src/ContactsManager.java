@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class ContactsManager {
@@ -12,6 +13,17 @@ public class ContactsManager {
         try {
             cf.createDirectory();
             cf.createFile();
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+
+        try {
+            if (cf.readFile() != null) {
+                for (String contact : cf.readFile()) {
+                    String[] c = contact.split(",");
+                    contacts.add(new Person(c[0], c[1]));
+                }
+            }
         } catch (IOException io) {
             io.printStackTrace();
         }
@@ -31,12 +43,11 @@ public class ContactsManager {
             switch (option) {
                 case 1:
                     try {
-                        System.out.println("Name       | Phone");
-                        System.out.println("-----------|-----------");
+                        System.out.println("Name                 | Phone");
+                        System.out.println("---------------------|----------------");
                         for (String contact : cf.readFile()) {
                             String[] c = contact.split(",");
-
-                            System.out.printf("%-10s | %s%n", c[0], c[1]);
+                            System.out.printf("%-20s | %s%n", c[0], c[1]);
                         }
                     } catch (IOException io) {
                         io.printStackTrace();
@@ -44,27 +55,82 @@ public class ContactsManager {
 
                     break;
                 case 2:
-                    System.out.print("Enter the name: ");
-                    String name = input.next();
 
-                    System.out.print("Enter the phone number: ");
-                    String phone = input.next();
+                    System.out.print("Enter the first name: ");
+                    String fName = input.next();
 
-                    contacts.add(new Person(name, phone));
+                    System.out.print("Enter the last first name: ");
+                    String lName = input.next();
 
-                    System.out.println(contacts);
+                    String phone = "";
+                    boolean validNumber = false;
+                    do {
+                        System.out.print("Enter a 7 or 10 digit phone number: ");
+                        phone = input.next();
+                        if (phone.length() == 7 || phone.length() == 10 ) {
+                            validNumber = true;
+                        }
+                        else{
+                            System.out.println("Incorrect number of digits. Please enter valid number.");
+                        }
+                    } while (!validNumber);
+
+
+                    String name = fName + " " + lName;
+                    String number = phone.replaceFirst("(\\d{3})(\\d{3})(\\d+)", "($1) $2-$3");
+
+
+                    contacts.add(new Person(name, number));
+
                     try {
+                        cf.clearDoc();
                         cf.writeToFile(contacts);
                     } catch (IOException io) {
                         io.printStackTrace();
                     }
                     break;
+
+
                 case 3:
+                    System.out.println("Search by name: ");
+                    String searchName = input.next();
+//                    for (int i = 0; i < contacts.size(); i++) {
+//                        if (searchName.contains(contacts.get(i).getName()))
+//                            System.out.println(contacts.get(i).getName() + " " + contacts.get(i).getNumber());
+
+                    try {
+                        Scanner scanner = new Scanner(Paths.get("data", "contacts.txt"));
+                        System.out.println("Name                 | Phone");
+                        System.out.println("---------------------|----------------");
+                        while (scanner.hasNext()) {
+                            String line = scanner.nextLine().toString();
+                            if (line.contains(searchName.toLowerCase())) {
+                                String[] c = line.split(",");
+                                System.out.printf("%-20s | %s%n", c[0], c[1]);
+
+                            }
+                        }
+                    } catch (IOException io) {
+                        io.printStackTrace();
+                    }
+//                    }
+
+
                     break;
                 case 4:
-                    for (int i = 0; i < contacts.size(); i++) {
-                        System.out.println((i + 1) + ". " + contacts.get(i).getName() + " " + contacts.get(i).getNumber());
+                    try {
+                        System.out.println("Id    | Name                 | Phone");
+                        System.out.println("------|----------------------|----------------");
+                        int counter = 1;
+                        for (String contact : cf.readFile()) {
+                            String[] c = contact.split(",");
+                            System.out.printf("%-5d | %-20s | %s%n", counter, c[0], c[1]);
+                            counter++;
+                        }
+                    } catch (IOException io) {
+                        io.printStackTrace();
                     }
+
                     System.out.println("Enter the number of the contact you would like to delete?");
                     int userContact = input.nextInt();
                     contacts.remove(contacts.get(userContact - 1));
@@ -72,7 +138,7 @@ public class ContactsManager {
                     try {
                         cf.clearDoc();
                         cf.writeToFile(contacts);
-                    } catch(IOException io) {
+                    } catch (IOException io) {
                         io.printStackTrace();
                     }
 
