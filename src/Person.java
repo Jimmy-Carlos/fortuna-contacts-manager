@@ -16,7 +16,7 @@ public class Person {
     }
 
     public byte[] createLineText(){
-        String lineText = name + " | " + number + "\n";
+        String lineText = name + "," + number + "\n";
         return lineText.getBytes();
     }
 
