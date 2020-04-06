@@ -108,8 +108,8 @@ public class ContactsManager {
                         System.out.println("Name                 | Phone");
                         System.out.println("---------------------|----------------");
                         while (scanner.hasNext()) {
-                            String line = scanner.nextLine().toString();
-                            if (line.contains(searchName.toLowerCase())) {
+                            String line = scanner.nextLine();
+                            if (line.toLowerCase().contains(searchName.toLowerCase())) {
                                 String[] c = line.split(",");
                                 System.out.printf("%-20s | %s%n", c[0], c[1]);
 
