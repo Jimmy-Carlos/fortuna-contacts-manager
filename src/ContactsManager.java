@@ -150,15 +150,20 @@ public class ContactsManager {
 
                     break;
                 case 5:
-                    break;
                 default:
+                    System.out.println("Goodbye...");
+
                     break;
             }
 
-            System.out.println();
+            if(option == 5) {
+                again = "n";
+            } else {
+                System.out.println();
 
-            System.out.print("Would you like to enter another option? [Y/N] ");
-            again = input.next();
+                System.out.print("Would you like to enter another option? [Y/N] ");
+                again = input.next();
+            }
         } while (again.equalsIgnoreCase("y"));
     }
 }
